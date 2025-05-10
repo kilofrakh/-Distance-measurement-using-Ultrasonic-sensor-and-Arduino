@@ -31,7 +31,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 int duration; // variable da bey7ot el time lel echo
 int distance; // variable da bey7ot eldistance elly et7seb
-file dataFile; // variable da bey7ot el file lel SD card
+File dataFile; // variable da bey7ot el file lel SD card
 
 void setup() {
     lcd.init(); // ben3ml initialize lel lcd
