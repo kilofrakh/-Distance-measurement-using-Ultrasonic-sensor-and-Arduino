@@ -1,56 +1,74 @@
-
 #include <LiquidCrystal_I2C.h>
 
+#define trigPin
+#define echoPin 
 
-LiquidCrystal_I2C lcd(0x27, 16, 2); // fformat elshasha  (Address,Width,Height )
+LiquidCrystal_I2C
+    lcd(0x20, 16, 2);
 
-#define echoPin 2 // ben3ml define lel pin D2 Arduino to Echo pin fel Sensor 
-#define trigPin 3 // ben3ml define lel pin D3 Arduino to Trig pin fel Sensor
 
-int duration; // ben3ml variable lel duration
-              
-int distance; // ben3ml variable lel distance
-             
 
+int dist; // Variable to store distance calculated usingint duration
+int dur;
 void setup()
 {
-    lcd.init(); // Initialize the lcd
-    lcd.backlight(); // benftah elbacklight lel lcd
+  	lcd.init(); // Initialize the lcd
+	lcd.backlight(); // Turn on the Backlight
+    pinMode(trigPin,
+            OUTPUT); // Sets the trigPin as an OUTPUT
+    pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
 
-    pinMode(trigPin,OUTPUT); // benkhaly eltrigPin OUTPUT
-            
-    pinMode(echoPin, INPUT); // benkhaly elEchoPin INPUT
-  
-      // Initialize the serial communication
-    Serial.begin(9600); 
-  
-    
-    Serial.println("Distance measurement using Arduino Uno");  
-                   
+    // Serial Communication is starting with 9600 of
+    // baudrate speed
+    Serial.begin(9600);
 
+    // The text to be printed in serial monitor
+    Serial.println(
+        "Distance measurement using Arduino Uno.");
     delay(500);
 }
 
 void loop()
 {
-    digitalWrite(trigPin, LOW); // ben3ml eltrigPin low
-    delayMicroseconds(2); // delay 2 microsecond
-    digitalWrite(trigPin, HIGH); // ben3ml eltrigPin high
-    delayMicroseconds(10); // delay 10 microsecond
-    digitalWrite(trigPin, LOW); // ben3ml eltrigPin low
-    duration = pulseIn(echoPin, HIGH); // ben3ml elduration = pulseIn(elEchoPin, HIGH)
-    distance = duration * 0.0344 / 2; 
-    Serial.print("Distance: "); 
-    Serial.print(distance); 
-    Serial.println(" cm");
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2); // wait for 2 ms to avoid
+                          // collision in serial monitor
 
-    lcd.clear(); // clear the lcd
-    lcd.setCursor(0, 0); // Set cursor for "Distance:" (0, 0)
+    digitalWrite(
+        trigPin,
+        HIGH); // turn on the Trigger to generate pulse
+    delayMicroseconds(
+        10); // keep the trigger "ON" for 10 ms to generate
+             // pulse for 10 ms.
+
+    digitalWrite(trigPin,
+                 LOW); // Turn off the pulse trigger to stop
+                       // pulse generation
+
+    // If pulse reached the receiver echoPin
+    // become high Then pulseIn() returns the
+    // time taken by the pulse to reach the
+    // receiver
+
+    dur = pulseIn(echoPin, HIGH);
+    dist
+        = dur * 0.0344 / 2; // Expression to calculate
+                                 // distance using time
+
+    Serial.print("Distance: ");
+    Serial.print(
+        dist); // Print the output in serial monitor
+    Serial.println(" cm");
+    delay(100);
+  
+  
+  lcd.clear(); // Clear the display buffer
+    lcd.setCursor(0, 0); // Set cursor for "Distance:" (Column, Row)
         
     lcd.print("Distance:"); // print "Distance:" at (0, 0)
     lcd.setCursor(0,1); // Set cursor for output value  (0, 1)
                   
-    lcd.print(distance); // print Output in cm at (0, 1)
+    lcd.print(dist); // print Output in cm at (0, 1)
     lcd.setCursor(4, 1); // move cursor to   (4, 1)
     lcd.print("cm"); // print "cm" at (4, 1)
 
