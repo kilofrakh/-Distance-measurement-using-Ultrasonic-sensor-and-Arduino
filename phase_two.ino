@@ -1,7 +1,6 @@
 #include <LiquidCrystal_I2C.h>
 #include <RemoteXY.h>
 #include <SoftwareSerial.h>
-#include <SD.h>
 
 // RemoteXY connection settings
 #define REMOTEXY_MODE__SOFTSERIAL // benestakhdem software serial lel Bluetooth
@@ -27,11 +26,9 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 // ben3ml define lel pins lel ultrasonic sensor
 #define echoPin 2 // el pin da beyestanna el echo signal
 #define trigPin 3 // el pin da beyeb3at el trigger signal
-#define chipSelect 4 // el pin da beyconnect lel SD card module
 
 int duration; // variable da bey7ot el time lel echo
 int distance; // variable da bey7ot eldistance elly et7seb
-File dataFile; // variable da bey7ot el file lel SD card
 
 void setup() {
     lcd.init(); // ben3ml initialize lel lcd
@@ -42,27 +39,6 @@ void setup() {
 
     Serial.begin(9600); // benftah el serial communication
     Serial.println("Distance measurement using Arduino Uno"); // benprint message fel serial monitor
-    
-    if (!SD.begin(chipSelect)) { // bencheck 3la el SD card
-        Serial.println("Card failed, or not present"); // benprint message fel serial monitor
-        return; // ben3ml return
-    }
-
-
-
-
-
-
-    Serial.println("Card initialized."); // benprint message fel serial monitor
-
-    dataFile = SD.open("datalog.txt", FILE_WRITE); // benftah el file lel writing
-    if (dataFile) { // bencheck 3la el file
-        dataFile.println("Distance Data"); // benprint message fel file
-        
-    } else {
-        Serial.println("Error opening datalog.txt"); // benprint message fel serial monitor
-    }
-
 
     RemoteXY_Init(); // ben3ml initialize lel RemoteXY
 
@@ -96,21 +72,5 @@ void loop() {
     String distStr = String(distance) + " cm"; // ben7awel eldistance le string
     distStr.toCharArray(RemoteXY.distance_txt, 30); // ben7ot el string fel RemoteXY text field
 
-
-
-
-    if (dataFile) {
-        dataFile.print("Distance: ");
-        dataFile.print(distance);
-        dataFile.println(" cm");
-        dataFile.flush();  // Ensure data is written to SD card
-      }
-
-
-    else {
-        Serial.println("Error writing to datalog.txt"); // benprint message fel serial monitor
-    }
-
     delay(500); // benestanna 500ms
-    
 }
